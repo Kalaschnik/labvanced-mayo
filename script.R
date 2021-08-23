@@ -220,14 +220,22 @@ df_fam <- data.frame(matrix(NA, nrow = 18, ncol = 0), stringsAsFactors = FALSE)
 
 df_fam$Trials_per_Block <- rep(1:6, 3)
 
-# df_fam$Condition[1:6] <- events$mask_order[1]
-# df_fam$Condition[7:12] <- events$mask_order[2]
-# df_fam$Condition[13:18] <- events$mask_order[3]
-#
-# df_fam$LT_Screen_start_2_end[1:6] <-
-#   get_durations_for_condition(
-#     df,
-#     6,
-#     events$single_mask_events[[paste(events$Mask_order[1], "_indexes" ,sep = "")]],
-#     "AOIScreen"
-#   )$screen
+df_fam$Condition[1:6] <- events$mask_order[1]
+df_fam$Condition[7:12] <- events$mask_order[2]
+df_fam$Condition[13:18] <- events$mask_order[3]
+
+mask1_indexes <- events$single_mask_events[[paste(events$Mask_order[1], "_indexes", sep = "")]]
+mask2_indexes <- events$single_mask_events[[paste(events$Mask_order[2], "_indexes", sep = "")]]
+mask3_indexes <- events$single_mask_events[[paste(events$Mask_order[3], "_indexes", sep = "")]]
+
+df_fam$LT_Screen_start_2_end[1:6] <- get_durations_for_condition(df, 6, mask1_indexes, "AOIScreen")$screen
+df_fam$LT_Screen_start_2_end[7:12] <- get_durations_for_condition(df, 6, mask2_indexes, "AOIScreen")$screen
+df_fam$LT_Screen_start_2_end[13:18] <- get_durations_for_condition(df, 6, mask3_indexes, "AOIScreen")$screen
+
+df_fam$LT_Screen_only_end[1:6] <- get_durations_for_condition(df, 6, mask1_indexes, "AOIScreen", get_last_ms_to_video_end = 5000)$screen
+df_fam$LT_Screen_only_end[7:12] <- get_durations_for_condition(df, 6, mask2_indexes, "AOIScreen", get_last_ms_to_video_end = 5000)$screen
+df_fam$LT_Screen_only_end[13:18] <- get_durations_for_condition(df, 6, mask3_indexes, "AOIScreen", get_last_ms_to_video_end = 5000)$screen
+
+df_fam$Is_Included <- df_fam$LT_Screen_only_end > 200
+
+df_fam$FamPhase_Duration <- df$t[events$Mask_indexes$end] - df$t[events$Mask_indexes$start]
