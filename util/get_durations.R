@@ -9,7 +9,7 @@ get_durations_for_condition <- function(df, condition_length, start_end_index_li
 
     # if get_last_ms_to_video_end is given overwrite current_start_index
     if (!missing(get_last_ms_to_video_end)) {
-      current_t_minus_offset <- df$t[current_start_index] - get_last_ms_to_video_end
+      current_t_minus_offset <- df$t[current_endofvideo_index] - get_last_ms_to_video_end
       current_start_index <- which(df$t < current_t_minus_offset) %>% max()
     }
 
@@ -25,6 +25,12 @@ get_durations_for_condition <- function(df, condition_length, start_end_index_li
 
 
     # check if AOIs are boolean, if so skip the rest of the loop, as this will evaluate left/right
+    if ( is.logical(c("TRUE", "FALSE") %in% df[[aoicol]][current_start_index:current_endofvideo_index]) ) {
+      screen_pos_within_current_range <-
+        which(df[[aoicol]][current_start_index:current_endofvideo_index] == "TRUE")
+
+      durations$screen <- c(durations$screen, durations_within_current_range[screen_pos_within_current_range] %>% sum())
+    }
 
 
 
