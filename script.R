@@ -124,13 +124,7 @@ df_preflook <- data.frame(matrix(NA, nrow = 3, ncol = 0), stringsAsFactors = FAL
 
 
 df_preflook$ID <- df$exp_subject_id[1]
-df_preflook$Trial <- # todo just use 1:3
-  df$Task_Name %>%
-  unique() %>%
-  str_extract("(?<=Block_)\\d") %>%
-  # positive lookbehind for "Block_"
-  na.omit() %>%
-  as.vector()
+df_preflook$Trial <- 1:3
 
 df_preflook$Condition <- df$Task_Name %>%
   unique() %>%
